@@ -1,4 +1,4 @@
-# MIDI Playground
+# MIDI Playground :musical_keyboard:
 
 ### A Vue.js app to explore MIDI devices usage on browser.
 
