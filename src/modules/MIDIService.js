@@ -1,26 +1,30 @@
-import { Subject } from "rxjs";
-
+import { merge, Subject } from "rxjs";
+import MIDIMessageType from './enum/MIDIMessageType';
 class MIDIService {
 
   constructor() {
     this._subjects = {
-      'onNoteOn': new Subject(),
-      'onNoteOff': new Subject(),
+      'onSignalOn': new Subject(),
+      'onSignalOff': new Subject(),
       'onPitchWheel': new Subject()
     };
     this.requestMIDIAccess();
   }
 
-  get onNoteOn() {
-    return this._subjects['onNoteOn'];
+  get onSignalOn() {
+    return this._subjects['onSignalOn'];
   }
 
-  get onNoteOff() {
-    return this._subjects['onNoteOff'];
+  get onSignalOff() {
+    return this._subjects['onSignalOff'];
   }
 
   get onPitchWheel() {
     return this._subjects['onPitchWheel'];
+  }
+
+  get onMIDIMessage() {
+    return merge(this.onSignalOn, this.onSignalOff, this.onPitchWheel);
   }
 
   async requestMIDIAccess() {
@@ -34,7 +38,17 @@ class MIDIService {
   _onMIDIMessage(message) {
     const [type, note, velocity] = message.data;
     const dataObject = { type, note, velocity };
-    console.log(dataObject);
+    this.emitSignal(dataObject);
+  }
+
+  emitSignal(messageObject) {
+    const { type } = messageObject;
+
+    switch (type) {
+      case MIDIMessageType.ON: this.onSignalOn.next(messageObject); break;
+      case MIDIMessageType.OFF: this.onSignalOff.next(messageObject); break;
+      case MIDIMessageType.PITCH_WHEEL: this.onPitchWheel.next(messageObject); break;
+    }
   }
 }
 

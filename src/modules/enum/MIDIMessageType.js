@@ -1,14 +1,33 @@
 const types = {
-    UP: 128,
-    DOWN: 144,
-    PITCH_BEND: 224
+    ON: 128,
+    OFF: 144,
+    PITCH_WHEEL: 224
 };
+
+const strings = {
+    [types.ON]: "Up",
+    [types.OFF]: "Down",
+    [types.PITCH_WHEEL]: "Pitch bend"
+}
+
+function toString(messageCode) {
+    return strings[messageCode];
+}
 
 function checkExistance(typeCode) {
     return Object.values(types).includes(typeCode);
 }
 
 export default {
-    types,
-    checkExistance
+    get ON() {
+        return types.ON;
+    },
+    get OFF() {
+        return types.OFF;
+    },
+    get PITCH_WHEEL() {
+        return types.PITCH_WHEEL;
+    },
+    checkExistance,
+    toString
 };
