@@ -7,6 +7,5 @@ module.exports = {
   ],
   rules: {
     // override/add rules settings here, such as:
-    'vue/valid-v-bind': 'warn'
   }
 }

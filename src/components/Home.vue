@@ -2,20 +2,22 @@
   <div>
     <h3>MIDI</h3>
 
-    <div>Type: {{ type }}</div>
-    <div>Note: {{ note }}</div>
-    <div>Velocity: {{ velocity }}</div>
+    <div>Type: {{ lastType }}</div>
+    <div>Note: {{ lastNote }}</div>
+    <div>Velocity: {{ lastVelocity }}</div>
 
     <div class="signals-container">
-      <div v-for="notes in notes" class="signal" v-bind:key="note">
-        <div :class="[isActive(signal) ? 'on' : 'off']"></div>
-      </div>
+      <div
+        v-for="signal in signalsArray"
+        :key="signal.note"
+        class="signal"
+        :class="{ on: signal.on }"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import MIDIService from "../modules/MIDIService";
 import MIDIMessageType from "../modules/enum/MIDIMessageType";
 import MIDIManager from "../modules/MIDIManager";
 
@@ -27,48 +29,55 @@ export default {
     lastKey: null,
     maxSignalsLength: 61,
     initialSignalsIndex: 36,
+    midiManager: new MIDIManager(),
+    signals: {},
   }),
+  computed: {
+    lastType: function () {
+      return this.lastKey ? MIDIMessageType.toString(this.lastKey.type) : "";
+    },
+    lastNote: function () {
+      return this.lastKey ? this.lastKey.note : "";
+    },
+    lastVelocity: function () {
+      return this.lastKey ? this.lastKey.velocity : "";
+    },
+    signalsArray() {
+      return [...Array(this.maxSignalsLength).keys()]
+        .map((index) => index + this.initialSignalsIndex)
+        .map((note) => this.signals[note] || { note });
+    },
+  },
   mounted: function () {
     this.subscribeToMIDI();
   },
-  computed: {
-    type: function () {
-      return this.lastKey ? MIDIMessageType.toString(this.lastKey.type) : "";
-    },
-    note: function () {
-      return this.lastKey ? this.lastKey.note : "";
-    },
-    velocity: function () {
-      return this.lastKey ? this.lastKey.velocity : "";
-    },
-    signals() {
-      return [...Array(this.maxSignalsLength).keys()]
-        .map((index) => index + this.initialSignalsIndex)
-        .map((signal) => ({
-          class: this.isActive(signal) ? "on" : "off",
-        }));
-    },
-  },
   methods: {
     subscribeToMIDI: async function () {
-      await MIDIService.requestMIDIAccess();
-      MIDIService.onMIDIMessage.subscribe((messageData) => {
+      this.midiManager.onMIDIMessage.subscribe((messageData) => {
         this.lastKey = messageData;
       });
-      MIDIService.onSignalOn.subscribe(() => {
-        this.keyPressed = true;
+      this.midiManager.onSignalOn.subscribe((signal) => {
+        this.onSignalOn(signal);
       });
-      MIDIService.onSignalOff.subscribe(() => {
-        this.keyPressed = false;
+      this.midiManager.onSignalOff.subscribe((signal) => {
+        this.onSignalOff(signal);
       });
-    },
-
-    onMIDIMessage: function (message) {
-      this.lastKey = message;
     },
 
     isActive(signal) {
       return MIDIManager.activeSignals.map(({ note }) => note).includes(signal);
+    },
+
+    onSignalOn(signal) {
+      const { note } = signal;
+      this.signals[note] = { ...signal, on: true };
+      this.signals = { ...this.signals };
+    },
+
+    onSignalOff(signal) {
+      const { note } = signal;
+      this.signals[note] = { ...signal, on: false };
+      this.signals = { ...this.signals };
     },
   },
 };
@@ -87,11 +96,11 @@ export default {
   border: 1px solid #808080;
 }
 
-.signal .on {
-  background-color: "black";
+.off {
+  background-color: #fff;
 }
 
-.signal .on {
-  background-color: "bleu";
+.on {
+  background-color: #808080;
 }
 </style>

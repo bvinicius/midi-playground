@@ -1,12 +1,12 @@
 const types = {
-    ON: 128,
-    OFF: 144,
+    ON: 144,
+    OFF: 128,
     PITCH_WHEEL: 224
 };
 
 const strings = {
-    [types.ON]: "Up",
-    [types.OFF]: "Down",
+    [types.ON]: "Down",
+    [types.OFF]: "UP",
     [types.PITCH_WHEEL]: "Pitch bend"
 }
 

@@ -1,26 +1,42 @@
 import MIDIService from './MIDIService';
+import { merge, Subject } from "rxjs";
+import MIDIMessageType from './enum/MIDIMessageType';
 
 class MIDIManager {
     constructor() {
-        this.listenToMidi();
-        this.activeSignals = [];
+        this.midiService = new MIDIService();
+        this._subjects = {
+            'onSignalOn': new Subject(),
+            'onSignalOff': new Subject(),
+            'onPitchWheel': new Subject()
+        };
+        this.midiService.onMIDISignal.subscribe(signal => this.emitSignal(signal))
     }
 
-    addSignal(signal) {
-        this.activeSignals.push(signal)
+    get onSignalOn() {
+        return this._subjects['onSignalOn'];
     }
 
-    removeSignal(signal) {
-        this.activeSignals = this.activeSignals.filter(({ note }) => note === signal.note);
+    get onSignalOff() {
+        return this._subjects['onSignalOff'];
     }
 
-    listenToMidi() {
-        MIDIService.onSignalOn.subscribe((signal) => {
-            this.addSignal(signal);
-        });
-        MIDIService.onSignalOff.subscribe((signal) => {
-            this.removeSignal(signal);
-        });
+    get onPitchWheel() {
+        return this._subjects['onPitchWheel'];
     }
+
+    get onMIDIMessage() {
+        return merge(this.onSignalOn, this.onSignalOff, this.onPitchWheel);
+    }
+
+    emitSignal(signal) {
+        const { type } = signal;
+        switch (type) {
+            case MIDIMessageType.ON: this.onSignalOn.next(signal); break;
+            case MIDIMessageType.OFF: this.onSignalOff.next(signal); break;
+            case MIDIMessageType.PITCH_WHEEL: this.onPitchWheel.next(signal); break;
+        }
+    }
+
 }
-export default new MIDIManager();
+export default MIDIManager;
