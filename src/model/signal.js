@@ -4,5 +4,9 @@ class Signal {
         this.note = note;
         this.velocity = velocity;
     }
+
+    get noteName() {
+
+    }
 }
 export default Signal;

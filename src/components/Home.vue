@@ -6,23 +6,19 @@
     <div>Note: {{ lastNote }}</div>
     <div>Velocity: {{ lastVelocity }}</div>
 
-    <div class="signals-container">
-      <div
-        v-for="signal in signalsArray"
-        :key="signal.note"
-        class="signal"
-        :class="{ on: signal.on }"
-      />
-    </div>
+    <synth-component />
   </div>
 </template>
 
 <script>
 import MIDIMessageType from "../modules/enum/MIDIMessageType";
 import MIDIManager from "../modules/MIDIManager";
+import Player from "../modules/Synth";
+import SynthComponent from "./SynthComponent.vue";
 
 export default {
   name: "Home",
+  components: { SynthComponent },
   data: () => ({
     midi: {},
     midimap: {},
@@ -48,9 +44,7 @@ export default {
         .map((note) => this.signals[note] || { note });
     },
   },
-  mounted: function () {
-    this.subscribeToMIDI();
-  },
+  mounted: function () {},
   methods: {
     subscribeToMIDI: async function () {
       this.midiManager.onMIDIMessage.subscribe((messageData) => {
