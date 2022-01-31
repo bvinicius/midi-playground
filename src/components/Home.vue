@@ -44,7 +44,9 @@ export default {
         .map((note) => this.signals[note] || { note });
     },
   },
-  mounted: function () {},
+  mounted: function () {
+    this.subscribeToMIDI();
+  },
   methods: {
     subscribeToMIDI: async function () {
       this.midiManager.onMIDIMessage.subscribe((messageData) => {
