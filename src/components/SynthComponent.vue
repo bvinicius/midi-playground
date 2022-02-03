@@ -1,12 +1,11 @@
 <template>
   <div class="container">
     <div class="keys-container">
-      <div
-        v-for="signal in signalsArray"
-        :key="signal.note"
-        class="key"
-        :class="{ on: signal.on }"
-      />
+      <div class="oscillators">
+        <div class="oscillator">
+          <Knob />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -14,8 +13,10 @@
 <script>
 import MIDIManager from "../modules/MIDIManager";
 import Synth from "../modules/Synth";
+import Knob from "./Knob.vue";
 export default {
   name: "SynthComponent",
+  components: { Knob },
   props: {
     initialSignalsIndex: {
       type: Number,
@@ -31,13 +32,7 @@ export default {
     midiManager: new MIDIManager(),
     synth: new Synth(),
   }),
-  computed: {
-    signalsArray() {
-      return [...Array(this.maxSignalsLength).keys()]
-        .map((index) => index + this.initialSignalsIndex)
-        .map((note) => this.signals[note] || { note });
-    },
-  },
+  computed: {},
   mounted: function () {
     this.subscribeToMIDI();
   },
@@ -48,15 +43,9 @@ export default {
     },
     onSignalOn: function (signal) {
       this.synth.start(signal);
-      const { note } = signal;
-      this.signals[note] = { ...signal, on: true };
-      this.signals = { ...this.signals };
     },
     onSignalOff: function (signal) {
       this.synth.stop(signal);
-      const { note } = signal;
-      this.signals[note] = { ...signal, on: false };
-      this.signals = { ...this.signals };
     },
   },
 };

@@ -4,7 +4,7 @@ import MIDIMessageType from "./enum/MIDIMessageType";
 class MIDIService {
   constructor() {
     this._listenMIDISignals();
-    this._listenKeyboardSignals();
+    // this._listenKeyboardSignals();
     this.onMIDISignal = new Subject();
   }
 
