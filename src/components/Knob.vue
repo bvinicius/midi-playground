@@ -1,16 +1,15 @@
 <template>
   <div class="knob-container">
-    <div class="optionsLabels"></div>
+    <div class="optionsLabels" />
     <div class="knob">
-      <div class="pointer"></div>
+      <div class="pointer" />
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "knob",
-  props: ["options"],
+  name: "Knob",
 };
 </script>
 
@@ -18,7 +17,7 @@ export default {
 .knob {
   width: 60px;
   height: 60px;
-  border-radius: 50%;
+  clip-path: circle();
   background-color: black;
 }
 
