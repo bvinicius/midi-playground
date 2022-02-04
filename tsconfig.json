@@ -13,6 +13,8 @@
   },
   "include": [
     "./vue-shim.d.ts",
+    "./babel.config.js",
+    "./jest.config.js",
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",

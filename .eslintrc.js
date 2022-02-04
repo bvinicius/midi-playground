@@ -1,13 +1,14 @@
 module.exports = {
+  parser: "vue-eslint-parser",
   extends: [
     "plugin:vue/recommended", // Use this if you are using Vue.js 2.x.
+    "plugin:vue/base",
   ],
-  rules: {
-    // override/add rules settings here, such as:
-  },
   parserOptions: {
-    ecmaVersion: "latest",
+    parser: "@typescript-eslint/parser",
+    ecmaVersion: 2020,
     sourceType: "module",
     project: "./tsconfig.json",
+    extraFileExtensions: [".vue"],
   },
 };

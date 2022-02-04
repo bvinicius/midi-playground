@@ -10,11 +10,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
+import type { Signal } from "../model/signal";
 import MIDIManager from "../modules/MIDIManager";
 import Synth from "../modules/Synth";
 import Knob from "./Knob.vue";
-export default {
+
+export default Vue.extend({
   name: "SynthComponent",
   components: { Knob },
   props: {
@@ -41,14 +44,14 @@ export default {
       this.midiManager.onSignalOn.subscribe(this.onSignalOn.bind(this));
       this.midiManager.onSignalOff.subscribe(this.onSignalOff.bind(this));
     },
-    onSignalOn: function (signal) {
+    onSignalOn: function (signal: Signal) {
       this.synth.start(signal);
     },
-    onSignalOff: function (signal) {
+    onSignalOff: function (signal: Signal) {
       this.synth.stop(signal);
     },
   },
-};
+});
 </script>
 
 <style>

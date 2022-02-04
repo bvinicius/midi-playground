@@ -3,10 +3,12 @@ import Signal from "../model/signal";
 import NoteMapper from "./NoteMapper/NoteMapper";
 
 class Synth {
+  private noteMapper: NoteMapper;
   private oscillatorsMap: any = {};
   private octaveShift: number = -1;
 
-  constructor(private noteMapper: NoteMapper) {
+  constructor() {
+    this.noteMapper = new NoteMapper();
     this.oscillatorsMap = {};
     this.octaveShift = -1;
   }
