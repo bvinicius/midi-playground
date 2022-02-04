@@ -1,18 +1,21 @@
 import * as Tone from "tone";
-import { NoteMapper } from "./NoteMapper/NoteMapper";
+import Signal from "../model/signal";
+import NoteMapper from "./NoteMapper/NoteMapper";
 
 class Synth {
-  constructor() {
-    this.noteMapper = new NoteMapper();
+  private oscillatorsMap: any = {};
+  private octaveShift: number = -1;
+
+  constructor(private noteMapper: NoteMapper) {
     this.oscillatorsMap = {};
     this.octaveShift = -1;
   }
 
-  get now() {
+  get now(): number {
     return Tone.now();
   }
 
-  start({ note }) {
+  start({ note }: Signal) {
     const noteName = this.noteMapper.mapToName(note, this.octaveShift);
     const oscillator = new Tone.Oscillator(
       noteName,
@@ -22,7 +25,7 @@ class Synth {
     this.oscillatorsMap[noteName].start();
   }
 
-  stop({ note }) {
+  stop({ note }: Signal) {
     const noteName = this.noteMapper.mapToName(note, this.octaveShift);
     const oscillator = this.oscillatorsMap[noteName];
     oscillator && oscillator.stop();

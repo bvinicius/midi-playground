@@ -10,13 +10,16 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import MIDIMessageType from "../modules/enum/MIDIMessageType";
 import MIDIManager from "../modules/MIDIManager";
 import Player from "../modules/Synth";
 import SynthComponent from "./SynthComponent.vue";
+import Vue from "vue";
+import Signal from "../model/signal";
+import { SignalOperatorOptions } from "tone/build/esm/signal/SignalOperator";
 
-export default {
+export default Vue.extend({
   name: "Home",
   components: { SynthComponent },
   data: () => ({
@@ -60,23 +63,19 @@ export default {
       });
     },
 
-    isActive(signal) {
-      return MIDIManager.activeSignals.map(({ note }) => note).includes(signal);
-    },
+    // onSignalOn(signal) {
+    //   const { note } = signal;
+    //   this.signals[note] = { ...signal, on: true };
+    //   this.signals = { ...this.signals };
+    // },
 
-    onSignalOn(signal) {
-      const { note } = signal;
-      this.signals[note] = { ...signal, on: true };
-      this.signals = { ...this.signals };
-    },
-
-    onSignalOff(signal) {
-      const { note } = signal;
-      this.signals[note] = { ...signal, on: false };
-      this.signals = { ...this.signals };
-    },
+    // onSignalOff(signal) {
+    //   const { note } = signal;
+    //   this.signals[note] = { ...signal, on: false };
+    //   this.signals = { ...this.signals };
+    // },
   },
-};
+});
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

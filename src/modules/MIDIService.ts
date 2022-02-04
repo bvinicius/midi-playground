@@ -2,6 +2,7 @@ import { Subject } from "rxjs";
 import Signal from "../model/signal";
 import MIDIMessageType from "./enum/MIDIMessageType";
 class MIDIService {
+  public onMIDISignal: Subject<Signal>;
   constructor() {
     this._listenMIDISignals();
     // this._listenKeyboardSignals();
@@ -9,10 +10,10 @@ class MIDIService {
   }
 
   async _listenMIDISignals() {
-    const midi = await navigator.requestMIDIAccess();
-    for (var input of midi.inputs.values()) {
-      input.onmidimessage = (message) => this._onMIDIMessage(message);
-    }
+    const midi = await window.navigator.requestMIDIAccess();
+    Object.values(midi.inputs).forEach((input) => {
+      input.onmidimessage = this._onMIDIMessage.bind(this);
+    });
     return midi;
   }
 
@@ -38,7 +39,7 @@ class MIDIService {
     });
   }
 
-  _onMIDIMessage(message) {
+  _onMIDIMessage(message: { data: number[] }) {
     const [type, note, velocity] = message.data;
     const signal = new Signal(type, note, velocity);
     this.onMIDISignal.next(signal);

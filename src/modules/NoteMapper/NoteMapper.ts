@@ -1,4 +1,4 @@
-const cromacticScale = [
+const cromacticScale: string[] = [
   "C",
   "Db",
   "D",
@@ -13,10 +13,8 @@ const cromacticScale = [
   "B",
 ];
 
-export class NoteMapper {
-  constructor() {
-    this.baseNote = 0;
-  }
+export default class NoteMapper {
+  private BASE_NOTE = 0;
 
   /**
    * Returns a string representing a musical note with its octave given by the integer note and its octaveShift passed as parameters.
@@ -24,10 +22,10 @@ export class NoteMapper {
    * @param {number} octaveShift
    * @returns
    */
-  mapToName(note, octaveShift = 0) {
+  mapToName(note: number, octaveShift = 0): string {
     const tone = note % cromacticScale.length;
-    const octave = parseInt(note / cromacticScale.length);
-    const adjustedOctave = Math.max(this.baseNote, octave + octaveShift);
+    const octave = Math.floor(note / cromacticScale.length);
+    const adjustedOctave = Math.max(this.BASE_NOTE, octave + octaveShift);
     return `${cromacticScale[tone]}${adjustedOctave}`;
   }
 }
